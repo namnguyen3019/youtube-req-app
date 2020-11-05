@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import youtube from './api/youtube';
+import SearchBar from './components/SearchBar';
+import VideoDetail from './components/VideoDetail';
+import VideoList from './components/VideoList';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+	const [videos, setVideos] = useState([]);
+	const [selectedVideo, setSelectedVideo] = useState(null);
+	const onSubmit = async (term) => {
+		const res = await youtube.get('/search', {
+			params: {
+				q: term,
+			},
+		});
+
+		setVideos(res.data.items);
+		setSelectedVideo(res.data.items[0]);
+	};
+	return (
+		<div className="ui container">
+			{' '}
+			Hello, Nam
+			<SearchBar onSubmit={onSubmit} />
+			<VideoDetail selectedVideo={selectedVideo} />
+			<VideoList videos={videos} setSelectedVideo={setSelectedVideo} />
+		</div>
+	);
+};
 
 export default App;
